@@ -39,24 +39,24 @@ export const Header = () => {
           <Link href="https://anax.vn/" className="text-md font-semibold  text-black hover:text-custom-orange border-b-3 border-transparent hover:border-custom-orange py-2">
             Trang chủ
           </Link>
-          <Link href="https://anax.vn/" className="text-custom-orange border-custom-orange text-md font-semibold  hover:text-custom-orange border-b-3 border-transparent hover:border-custom-orange py-2">
+          <a href="https://anax.vn/" className="text-custom-orange border-custom-orange text-md font-semibold  hover:text-custom-orange border-b-3 border-transparent hover:border-custom-orange py-2">
             <p >Nghị Quyết 68</p>
-          </Link>
-          <Link href="https://anax.vn/" className="text-md font-semibold  text-black  hover:text-custom-orange border-b-3 border-transparent hover:border-custom-orange py-2">
+          </a>
+          <a href="https://anax.vn/" className="text-md font-semibold  text-black  hover:text-custom-orange border-b-3 border-transparent hover:border-custom-orange py-2">
             Giải pháp
-          </Link>
-          <Link href="/https://anax.vn/" className="text-md font-semibold  text-black  hover:text-custom-orange border-b-3 border-transparent hover:border-custom-orange py-2 flex items-center">
+          </a>
+          <a href="https://anax.vn/" className="text-md font-semibold  text-black  hover:text-custom-orange border-b-3 border-transparent hover:border-custom-orange py-2 flex items-center">
             Xu hướng
             <Image src={Gifflash} alt="flash" width={20} height={20} className="ml-1" />
-          </Link>
-          <Link href="/https://anax.vn/" className="text-md font-semibold  text-black hover:text-custom-orange border-transparent hover:border-custom-orange py-2">
+          </a>
+          <a href="https://anax.vn/" className="text-md font-semibold  text-black hover:text-custom-orange border-transparent hover:border-custom-orange py-2">
             Liên Hệ
-          </Link>
+          </a>
           <div className=" bg-custom-orange border-custom-orange rounded-4xl px-5 py-2 hover:bg-custom-orange flex justify-center items-center animate-pulse-scale">
-          <Link href="https://anax.vn/" className="text-md font-semibold  text-white border-transparent flex items-center">
+          <a href="https://anax.vn/" className="text-md font-semibold  text-white border-transparent flex items-center">
             <Phone size={24} strokeWidth={0} stroke="white" fill="white" className="mr-1"/>
             TƯ VẤN NGAY
-          </Link>
+          </a>
           </div>
         </nav>
         {isOpen? (
