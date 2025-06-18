@@ -11,6 +11,7 @@ const CardFooter = ({
   description: string;
   btnname: string;
 }) => {
+  //render
   if (title == "Hotline tư vấn") {
     return (
       <div className="bg-white rounded-lg p-6 flex flex-col  shadow">

@@ -1,16 +1,9 @@
+// "use client";
+//Component
+import { Header } from "../_lib/layout/header";
+import { Footer } from "../_lib/layout/footer";
+import { MobileSidebar } from "../_lib/layout/mobile-sidebar";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
   title: {
     default: 'Nghị Quyết 68 - Tổng hợp tin tức mới nhất',
@@ -71,17 +64,20 @@ export const metadata: Metadata = {
     yandex: 'yandex-verification=your-verification-code',
   },
 };
-
-export default function RootLayout({
+export default function MainLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  
   return (
-    <html lang="vi" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body className="antialiased">
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <MobileSidebar />
+      <main className="flex-1 pt-16 bg-[#FCFAF6]">
         {children}
-      </body>
-    </html>
+      </main>
+      <Footer />
+    </div>
   );
 }

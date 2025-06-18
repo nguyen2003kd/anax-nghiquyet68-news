@@ -6,15 +6,18 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+//Image
 import Logoaboutus from "@/public/img/anax-aboutus.png"
 
 export const MobileSidebar = () => {
+  //state
   const { isOpen, onClose } = useMobileSidebar();
   const [activeTab, setActiveTab] = useState<"gioi-thieu" | "giai-phap">(
     "gioi-thieu"
   );
 
   // Prevent background scrolling
+  //
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "unset";
     return () => {
@@ -25,6 +28,7 @@ export const MobileSidebar = () => {
   if (!isOpen) return null;
 
   return (
+    //Render
     <>
       {/* Overlay */}
       <div

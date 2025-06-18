@@ -8,10 +8,12 @@ import "@/app/styles/colors.css";
 import { useSearchModeMobile, useScropMode } from "@/hooks/use-header";
 import { Input } from "@/components/ui/input";
 import { useEffect } from "react";
+//Image
 import Logo from "@/public/img/logo-anax.png"
 import Gifflash from "@/public/gif/flash.gif"
 
 export const Header = () => {
+  //state
   const { onOpen } = useMobileSidebar();
   const {isOpen, onOpen: onOpenSearch,onClose: onCloseSearch } = useSearchModeMobile();
   const {isScrolled, handleScroll} = useScropMode();
@@ -22,6 +24,7 @@ export const Header = () => {
     };
   }, [handleScroll]);
   return (
+    //render
     <header className={`fixed top-0 left-0 right-0 z-40 ${isScrolled ? "animate-fall bg-white" : "bg-white "}`}>
       <div className="grid grid-cols-3 container items-center justify-between lg:flex  py-2 px-4 mx-auto">
         <div className="lg:hidden items-center ">
@@ -29,7 +32,7 @@ export const Header = () => {
         </div>
         <div className="flex items-center justify-center">
           <Link href="/" className="text-custom-orange py-3">
-            <Image layout="fixed" src={Logo} width={135} height={90} alt="anaX"></Image>
+            <Image  src={Logo} width={135} height={90} alt="anaX"></Image>
           </Link>
         </div>
         <div className="lg:hidden flex items justify-end">

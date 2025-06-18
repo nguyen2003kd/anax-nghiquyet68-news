@@ -1,7 +1,9 @@
 import React from "react";
+//Icon
 import { Calendar, Tag, FileText } from "lucide-react";
+//Type
 import { ResolutionCardProps } from "./lib/types";
-
+//function
 const ResolutionCard: React.FC<ResolutionCardProps> = ({
   category,
   title,
@@ -9,6 +11,7 @@ const ResolutionCard: React.FC<ResolutionCardProps> = ({
   description,
   onClick,
 }) => {
+  //function
   const getCategoryColor = (category: string) => {
     const colors = {
       'Kinh tế': 'bg-blue-100 text-blue-800',
@@ -33,14 +36,14 @@ const ResolutionCard: React.FC<ResolutionCardProps> = ({
       <div className="relative p-6">  
         {/* Header */}
         <div className="flex items-start justify-between mb-4 gap-4">
-          <div className="w-[70%]">
-            <h3 className="text-[15px] font-bold text-gray-800 line-clamp-3 group-hover:text-red-700 transition-colors duration-300">
+          <div className="w-[70%] flex-shrink">
+            <h3 className="text-[13px] md:text-[15px] font-bold text-gray-800 line-clamp-3 group-hover:text-red-700 transition-colors duration-300">
               {title}
             </h3>
           </div>
           <div className="w-[30%] flex justify-end">
-            <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-lg text-sm font-medium border ${getCategoryColor(category)}`}>
-              <Tag className="w-4 h-4" />
+            <span className={`inline-flex md:text-sm items-center gap-1 px-3 py-1 rounded-lg text-[13px] md:text-[15px] font-medium border ${getCategoryColor(category)}`}>
+              <Tag className="w-4 h-4 md:hidden" />
               {category}
             </span>
           </div>

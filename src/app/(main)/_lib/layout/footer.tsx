@@ -1,11 +1,19 @@
+"use client";
+
+//Icon
 import { FaQuestion } from "react-icons/fa";
-import Icphone from "@/public/img/ic-bf-phone-2.png"
+//Component
 import CardFooter from "@/app/(main)/_lib/layout/components/card-footer";
+//Image
 import Icinfo from "@/public/img/ic-bf-info-2.png"
 import Icmssg from "@/public/img/ic-bf-mssg-2.png"
-export const Footer = () => {
+import Icphone from "@/public/img/ic-bf-phone-2.png"
+import { forwardRef } from "react";
+
+export const Footer = forwardRef<HTMLElement>((props, ref) => {
   return (
-    <footer className="bg-[#16aaff]  pt-8 pb-8">
+    //Render
+    <footer ref={ref} className="bg-[#16aaff] pt-8 pb-8">
       <div className="container mx-auto flex flex-col px-4 justify-center items-center">
           <div className="bg-white text-sm lg:text-lg lg:px-2 flex flex-row rounded-4xl px-1 py-1 items-center justify-center mb-2 w-fit lg:w-[]">
             <div className="bg-custom-orange rounded-full lg:p-1 p-2 mr-2">
@@ -25,7 +33,7 @@ export const Footer = () => {
             <CardFooter image={Icphone} title="Hotline tư vấn" description="trực tiếp" btnname="(+84)2871099879"/>
           </div>
           <div className="md:w-[30%] w-[70%]">
-          <CardFooter image={Icmssg} title="Tư vấn khách" description="chat zalo" btnname="hàng Chat zalo ngay"/>
+          <CardFooter image={Icmssg} title="Tư vấn khách" description="chat zalo" btnname="Chat zalo ngay"/>
           </div>
           {/* Box 2 */}
           <div className="md:w-[30%] w-[70%]">
@@ -36,4 +44,6 @@ export const Footer = () => {
       </div>
     </footer>
   );
-};
+});
+
+Footer.displayName = "Footer";

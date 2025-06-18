@@ -1,91 +1,115 @@
+"use client";
 
-import { FileText, Download, Search, ChevronRight, Users, Info, BookOpen, HelpCircle } from 'lucide-react';
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { CalendarDays } from "lucide-react";
+import { usePageHome } from "@/hooks/use-pagehome";
+import { useRef, useEffect } from "react";
+import { useSidebarScroll } from "@/hooks/use-sidebar-scroll";
+import { useRouter } from "next/navigation";
+import { RevolutionRow } from "@/lib/type";
 
 export default function Sidebar() {
+  const { rows, selectedRow, setSelectedRow } = usePageHome();
+  const router = useRouter();
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const footerRef = useRef<HTMLElement>(null);
+  const sidebarStyle = useSidebarScroll(sidebarRef, footerRef);
+  
+  const handleNewsClick = (news: RevolutionRow) => {
+    setSelectedRow(news);
+    router.push(`/detail/${news.id}`);
+  };
+  
+  const getCategoryColor = (category: string) => {
+    const colors = {
+      'Kinh tế': 'bg-blue-100 text-blue-800',
+      'Chính sách': 'bg-indigo-100 text-indigo-800',
+      'Đầu tư': 'bg-green-100 text-green-800',
+      'Policy': 'bg-indigo-100 text-indigo-800',
+      'Reform': 'bg-purple-100 text-purple-800',
+      'Technology': 'bg-cyan-100 text-cyan-800',
+    };
+    return colors[category as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+  };
+  // Get a reference to the footer
+  useEffect(() => {
+    const footer = document.querySelector("footer");
+    if (footer) {
+      footerRef.current = footer as HTMLElement;
+    }
+  }, []);
+
   return (
-    <aside className="w-60 bg-white/90 border-1 border-gray-200 shadow-lg">
-      <div className="p-6 space-y-8">
-        
-        {/* Quick Actions */}
-        <div>
-          <h3 className="text-lg font-bold text-red-900 mb-4">Thao tác nhanh</h3>
-          <div className="space-y-3">
-            <button className="w-full bg-red-700 hover:bg-red-800 text-white p-4 rounded-lg transition-colors duration-200 flex items-center space-x-3">
-              <FileText size={20} />
-              <span>Đăng ký hỗ trợ</span>
-            </button>
-            <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 p-4 rounded-lg transition-colors duration-200 flex items-center space-x-3  border border-gray-300">
-              <Download size={20} />
-              <span>Tải văn bản gốc</span>
-            </button>
-            <button className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 p-4 rounded-lg transition-colors duration-200 flex items-center space-x-3 ">
-              <Search size={20} />
-              <span>Tra cứu hồ sơ</span>
-            </button>
+    <aside className="w-full lg:w-72 lg:ml-4">
+      <div className="w-full lg:hidden">
+        <Card className="bg-white/95 border-1 rounded-xl border-[#B90D2B] shadow-lg hover:shadow-xl transition-all duration-300">
+          <div className="border-b bg-[#B90D2B] rounded-bl-none rounded-br-none rounded-tl-xl rounded-tr-xl p-5 border-gray-100 items-center justify-center flex">
+            <h1 className="text-lg font-bold text-white/95">
+              Tin tức liên quan
+            </h1>
           </div>
-        </div>
-
-        {/* Related Links */}
-        <div>
-          <h3 className="text-lg font-bold text-red-900 mb-4">Liên kết liên quan</h3>
-          <div className="space-y-2">
-            <a href="#" className="flex items-center justify-between p-3 text-gray-700 hover:bg-red-50 rounded-lg transition-colors duration-200 group ">
-              <div className="flex items-center space-x-3">
-                <Users size={18} className="text-red-600" />
-                <span>Nghị định hướng dẫn thi hành</span>
+          <CardContent className="space-y-4 py-4">
+            {rows.filter((news) => news.id !== selectedRow?.id).slice(0, 5).map((news, index) => (
+              <div
+                key={index}
+                onClick={() => handleNewsClick(news)}
+                className="group border-b border-gray-400 pb-4 last:border-b-0 last:pb-0 hover:bg-gray-50/80 p-3 transition-all duration-300 cursor-pointer"
+              >
+                <h4 className="text-sm font-bold text-[#B90D2B] line-clamp-2 mb-3 group-hover:text-orange-600 transition-colors duration-200">
+                  {news.title}
+                </h4>
+                <div className="flex items-center justify-between">
+                  <Badge 
+                    variant="secondary" 
+                    className={`text-xs ${getCategoryColor(news.category)} hover:bg-gray-200 transition-colors duration-200`}
+                  >
+                    {news.category}
+                  </Badge>
+                  <div className="flex items-center gap-1 text-xs text-gray-500">
+                    <CalendarDays className="w-3 h-3" />
+                    <span>{new Date(news.date).toLocaleDateString('vi-VN')}</span>
+                  </div>
+                </div>
               </div>
-              <ChevronRight size={16} className="text-gray-400 group-hover:text-red-600 transition-colors" />
-            </a>
-            
-            <a href="#" className="flex items-center justify-between p-3 text-gray-700 hover:bg-red-50 rounded-lg transition-colors duration-200 group ">
-              <div className="flex items-center space-x-3">
-                <Info size={18} className="text-red-600" />
-                <span>Thông tư quy định chi tiết</span>
-              </div>
-              <ChevronRight size={16} className="text-gray-400 group-hover:text-red-600 transition-colors" />
-            </a>
-            
-            <a href="#" className="flex items-center justify-between p-3 text-gray-700 hover:bg-red-50 rounded-lg transition-colors duration-200 group ">
-              <div className="flex items-center space-x-3">
-                <BookOpen size={18} className="text-red-600" />
-                <span>Hướng dẫn thực hiện</span>
-              </div>
-              <ChevronRight size={16} className="text-gray-400 group-hover:text-red-600 transition-colors" />
-            </a>
-            
-            <a href="#" className="flex items-center justify-between p-3 text-gray-700 hover:bg-red-50 rounded-lg transition-colors duration-200 group ">
-              <div className="flex items-center space-x-3">
-                <HelpCircle size={18} className="text-red-600" />
-                <span>Câu hỏi thường gặp</span>
-              </div>
-              <ChevronRight size={16} className="text-gray-400 group-hover:text-red-600 transition-colors" />
-            </a>
+            ))}
+          </CardContent>
+        </Card>
+      </div>
+      
+      <div ref={sidebarRef} style={sidebarStyle} className="w-full hidden lg:block">
+        <Card className="bg-white/95 border-1 rounded-xl border-[#B90D2B] shadow-lg hover:shadow-xl transition-all duration-300">
+          <div className="border-b bg-[#B90D2B] rounded-bl-none rounded-br-none rounded-tl-xl rounded-tr-xl p-5 border-gray-100 items-center justify-center flex">
+            <h1 className="text-lg font-bold text-white/95">
+              Tin tức liên quan
+            </h1>
           </div>
-        </div>
-
-        {/* Additional Info Box */}
-        <div className="bg-gradient-to-br from-red-50 to-orange-50 border border-red-200 rounded-lg p-4">
-          <h4 className="text-sm font-semibold text-red-900 mb-2 ">Thông tin quan trọng</h4>
-          <p className="text-xs text-red-700 leading-relaxed ">
-            Nghị quyết này có hiệu lực từ ngày 01/01/2025. Các quy định trước đây trái với Nghị quyết này đều bị bãi bỏ.
-          </p>
-          <div className="mt-3 pt-3 border-t border-red-200">
-            <p className="text-xs text-red-600 ">
-              <strong>Cập nhật:</strong> 15/12/2024
-            </p>
-          </div>
-        </div>
-
-        {/* Contact Support */}
-        <div className="bg-gradient-to-br from-yellow-50 to-amber-50 border border-yellow-300 rounded-lg p-4">
-          <h4 className="text-sm font-semibold text-amber-900 mb-2 ">Hỗ trợ trực tuyến</h4>
-          <p className="text-xs text-amber-800 mb-3 ">
-            Cần hỗ trợ về nội dung Nghị quyết?
-          </p>
-          <button className="w-full bg-amber-600 hover:bg-amber-700 text-white text-xs py-2 px-3 rounded  transition-colors">
-            Liên hệ chuyên viên
-          </button>
-        </div>
+          <CardContent className="space-y-4 py-4">
+            {rows.filter((news) => news.id !== selectedRow?.id).slice(0, 5).map((news, index) => (
+              <div
+                key={index}
+                onClick={() => handleNewsClick(news)}
+                className="group border-b border-gray-400 pb-4 last:border-b-0 last:pb-0 hover:bg-gray-50/80 p-3 transition-all duration-300 cursor-pointer"
+              >
+                <h4 className="text-sm font-bold text-[#B90D2B] line-clamp-2 mb-3 group-hover:text-orange-600 transition-colors duration-200">
+                  {news.title}
+                </h4>
+                <div className="flex items-center justify-between">
+                  <Badge 
+                    variant="secondary" 
+                    className={`text-xs ${getCategoryColor(news.category)} hover:bg-gray-200 transition-colors duration-200`}
+                  >
+                    {news.category}
+                  </Badge>
+                  <div className="flex items-center gap-1 text-xs text-gray-500">
+                    <CalendarDays className="w-3 h-3" />
+                    <span>{new Date(news.date).toLocaleDateString('vi-VN')}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
       </div>
     </aside>
   );
