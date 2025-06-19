@@ -2,7 +2,6 @@
 //Component
 import { MobileSidebar } from "../_lib/layout/mobile-sidebar";
 import Patch from "@/app/config/path";
-import Head from "next/head";
 // import Banneranax from '@/public/img/anax-aboutus.png'
 import type { Metadata } from "next";
 export const metadata: Metadata = {
