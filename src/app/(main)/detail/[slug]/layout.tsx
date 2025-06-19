@@ -3,7 +3,6 @@ import { Footer } from "../../_lib/layout/footer";
 import { MobileSidebar } from "../../_lib/layout/mobile-sidebar";
 import type { Metadata } from "next";
 import { RevolutionRow } from "@/lib/type";
-import Head from "next/head";
 import slugify from "slugify";
 import Patch from "@/app/config/path";
 // Function để lấy dữ liệu từ Google Sheets
@@ -97,16 +96,9 @@ export default function DetailLayout({
   children,
 }: {
   children: React.ReactNode;
+  params: { slug: string };
 }) {
   return (
-    <>
-      <Head>
-        <link rel="icon" type="image/png" href="/img/favicon-anax.png" />
-        <meta property="og:image" content="/img/logo-anax.png" />
-        <meta property="og:image:type" content="image/png" />
-        <meta property="og:image:width" content="400" />
-        <meta property="og:image:height" content="400" />
-      </Head>
     <div className="min-h-screen flex flex-col">
       <Header />
       <MobileSidebar />
@@ -115,6 +107,5 @@ export default function DetailLayout({
       </main>
       <Footer />
     </div>
-    </>
   );
 } 
