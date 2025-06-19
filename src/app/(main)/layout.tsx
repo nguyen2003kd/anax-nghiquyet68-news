@@ -1,4 +1,3 @@
-"use client";
 
 import { Header } from "./_lib/layout/header";
 import { Footer } from "./_lib/layout/footer";

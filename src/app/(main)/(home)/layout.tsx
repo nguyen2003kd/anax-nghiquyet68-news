@@ -81,13 +81,6 @@ export default function MainLayout({
 }) {
   return (
     <>
-      <Head>
-        <link rel="icon" type="image/png" href="/img/favicon-anax.png" />
-        <meta property="og:image" content="/img/logo-anax.png" />
-        <meta property="og:image:type" content="image/png" />
-        <meta property="og:image:width" content="400" />
-        <meta property="og:image:height" content="400" />
-      </Head>
       <div className="min-h-screen flex flex-col">
         <MobileSidebar />
         <main className="flex-1 pt-16 bg-[#FCFAF6]">{children}</main>
