@@ -96,7 +96,6 @@ export default function DetailLayout({
   children,
 }: {
   children: React.ReactNode;
-  params: { slug: string };
 }) {
   return (
     <div className="min-h-screen flex flex-col">
