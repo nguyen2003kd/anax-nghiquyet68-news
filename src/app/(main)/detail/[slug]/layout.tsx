@@ -1,9 +1,10 @@
 import { Header } from "../../_lib/layout/header";
 import { Footer } from "../../_lib/layout/footer";
 import { MobileSidebar } from "../../_lib/layout/mobile-sidebar";
-import type { Metadata } from "next";
+import { generateMetadata } from "./metadata";
+import slugify from "slugify";
 import { RevolutionRow } from "@/lib/type";
-import Patch from "@/app/config/path";
+
 // Function để lấy dữ liệu từ Google Sheets
 async function getData(): Promise<RevolutionRow[]> {
   const SHEET_URL =
@@ -18,78 +19,25 @@ async function getData(): Promise<RevolutionRow[]> {
   }
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}): Promise<Metadata> {
-  const rawSlug = params.slug;
+export { generateMetadata };
 
-  // Tách slug và id từ rawSlug (vd: "chinh-sach-ho-tro&id=123")
-  const [pureSlug, id] = rawSlug.split("&id=");
-
+export async function generateStaticParams() {
   const rows = await getData();
-  const item = rows.find((row) => String(row.id) === id);
-
-  if (!item) {
-    return {
-      title: "Không tìm thấy - Nghị Quyết 68",
-      description: "Trang không tồn tại",
-    };
-  }
-
-  const plainTextContent = item.content.replace(/<[^>]*>/g, "").substring(0, 160);
-
-  return {
-    title: `${item.title} - Nghị Quyết 68`,
-    description: item.description || plainTextContent,
-    openGraph: {
-      title: item.title,
-      description: item.description || plainTextContent,
-      url: `https://nghiquyet68.vn/detail/${pureSlug}&id=${item.id}`,
-      siteName: "Anax",
-      locale: "vi_VN",
-      type: "article",
-      publishedTime: item.date,
-      modifiedTime: item.date,
-      authors: ["Anax"],
-      tags: [item.category, item.tag],
-      images: [
-        {
-          url: `${Patch.link_url}/img/anax-paner.png`,
-          width: 1200,
-          height: 630,
-          alt: `${item.title} - Nghị Quyết 68`,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: item.title,
-      description: item.description || plainTextContent,
-      images: [`${Patch.link_url}/img/anax-paner.png`],
-    },
-    metadataBase: new URL("https://nghiquyet68.vn"),
-    alternates: {
-      canonical: `/detail/${pureSlug}&id=${item.id}`,
-      languages: {
-        "vi-VN": `/detail/${pureSlug}&id=${item.id}`,
-      },
-    },
-    robots: {
-      index: true,
-      follow: true,
-    },
-  };
+  return rows.map((item: RevolutionRow) => ({
+    slug: `${slugify(item.title, { lower: true, strict: true })}`,
+  }));
 }
 
-
-
-export default function DetailLayout({
-  children,
-}: {
+type LayoutProps = {
   children: React.ReactNode;
-}) {
+  params: Promise<{ slug: string }>;
+}
+
+export default async function Layout({
+  children,
+  params,
+}: LayoutProps) {
+  await params; // Ensure params is resolved
   return (
     <div className="min-h-screen flex flex-col">
       <Header />

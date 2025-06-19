@@ -1,6 +1,8 @@
 // "use client";
+import { Header } from "@/src/app/(main)/_lib/layout/header";
+import { Footer } from "@/src/app/(main)/_lib/layout/footer";
+import { MobileSidebar } from "@/src/app/(main)/_lib/layout/mobile-sidebar";
 //Component
-import { MobileSidebar } from "../_lib/layout/mobile-sidebar";
 import Patch from "@/app/config/path";
 // import Banneranax from '@/public/img/anax-aboutus.png'
 import type { Metadata } from "next";
@@ -73,17 +75,19 @@ export const metadata: Metadata = {
     yandex: "yandex-verification=your-verification-code",
   },
 };
-export default function MainLayout({
+export default function Layout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <>
-      <div className="min-h-screen flex flex-col">
-        <MobileSidebar />
-        <main className="flex-1 pt-16 bg-[#FCFAF6]">{children}</main>
-      </div>
-    </>
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <MobileSidebar />
+      <main className="flex-1 pt-16 bg-[#FCFAF6]">
+        {children}
+      </main>
+      <Footer />
+    </div>
   );
 }

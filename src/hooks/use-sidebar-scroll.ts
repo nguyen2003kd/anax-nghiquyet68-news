@@ -34,8 +34,15 @@ export function useSidebarScroll(
       }
 
       frameRef.current = requestAnimationFrame(() => {
-        const sidebar = sidebarRef.current!;
-        const footer = footerRef.current!;
+        const sidebar = sidebarRef.current;
+        const footer = footerRef.current;
+
+        // Early return if either ref is null
+        if (!sidebar || !footer) {
+          ticking = false;
+          return;
+        }
+
         const footerRect = footer.getBoundingClientRect();
         const sidebarRect = sidebar.getBoundingClientRect();
         const headerHeight = 90;
