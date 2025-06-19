@@ -1,7 +1,5 @@
 // "use client";
 //Component
-import { Header } from "../_lib/layout/header";
-import { Footer } from "../_lib/layout/footer";
 import { MobileSidebar } from "../_lib/layout/mobile-sidebar";
 import Patch from "@/app/config/path";
 import Head from "next/head";
@@ -91,10 +89,8 @@ export default function MainLayout({
         <meta property="og:image:height" content="400" />
       </Head>
       <div className="min-h-screen flex flex-col">
-        <Header />
         <MobileSidebar />
         <main className="flex-1 pt-16 bg-[#FCFAF6]">{children}</main>
-        <Footer />
       </div>
     </>
   );
