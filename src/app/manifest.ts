@@ -9,17 +9,17 @@ export default function manifest(): MetadataRoute.Manifest {
     display: 'standalone',
     background_color: '#FCFAF6',
     theme_color: '#B90D2B',
-    // icons: [
-    //   {
-    //     src: '/images/logo-anax.png',
-    //     sizes: '192x192',
-    //     type: 'image/png',
-    //   },
-    //   {
-    //     src: '/images/logo-anax.png',
-    //     sizes: '512x512',
-    //     type: 'image/png',
-    //   },
-    // ],
+    icons: [
+      {
+        src: '/images/logo-anax.png',
+        sizes: '192x192',
+        type: 'image/png',
+      },
+      {
+        src: '/images/logo-anax.png',
+        sizes: '512x512',
+        type: 'image/png',
+      },
+    ],
   }
 } 

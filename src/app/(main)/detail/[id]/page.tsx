@@ -1,7 +1,7 @@
 "use client";
 //Component
 import Sidebar from "@/app/(main)/_lib/layout/Sidebar";
-import DOMPurify from 'dompurify';
+import DOMPurify from "dompurify";
 //type
 import Link from "next/link";
 import { usePageHome } from "@/hooks/use-pagehome";
@@ -13,14 +13,14 @@ import { RevolutionRow } from "@/app/(main)/_components/lib/types";
 //function
 function DetailPage() {
   //state
-  const { selectedRow,setRows, setSelectedRow, rows } = usePageHome();
+  const { selectedRow, setRows, setSelectedRow, rows } = usePageHome();
   const params = useParams();
   const id = params.id as string;
-  
+
   // Tìm item dựa trên ID từ URL
   useEffect(() => {
     if (id && rows.length > 0) {
-      const item = rows.find(row => row.id === id);
+      const item = rows.find((row) => row.id === id);
       if (item) {
         setSelectedRow(item);
       }
@@ -34,7 +34,11 @@ function DetailPage() {
           const res = await fetch(SHEET_URL, { cache: "no-store" });
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
           const json: RevolutionRow[] = await res.json();
-          setRows(json.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
+          setRows(
+            json.sort(
+              (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+            )
+          );
         } catch (err) {
           console.error("Failed to fetch sheet", err);
         }
@@ -42,11 +46,12 @@ function DetailPage() {
       fetchRows();
     }
   }, [id, rows, setSelectedRow, setRows]);
-  
-  const sanitizedHtml = typeof window !== "undefined"
-    ? (DOMPurify.sanitize(selectedRow?.content || "") as string)
-    : "";
-  
+
+  const sanitizedHtml =
+    typeof window !== "undefined"
+      ? (DOMPurify.sanitize(selectedRow?.content || "") as string)
+      : "";
+
   // Nếu không có selectedRow, hiển thị loading
   if (!selectedRow) {
     return (
@@ -62,100 +67,109 @@ function DetailPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    "headline": selectedRow.title,
-    "description": selectedRow.description,
-    "image": "https://nghiquyet68.vn/images/og-banner.jpg",
-    "author": {
+    headline: selectedRow.title,
+    description: selectedRow.description,
+    image: "https://nghiquyet68.vn/images/og-banner.jpg",
+    author: {
       "@type": "Organization",
-      "name": "Nghị Quyết 68",
-      "url": "https://nghiquyet68.vn"
+      name: "Nghị Quyết 68",
+      url: "https://nghiquyet68.vn",
     },
-    "publisher": {
+    publisher: {
       "@type": "Organization",
-      "name": "Nghị Quyết 68",
-      "logo": {
+      name: "Nghị Quyết 68",
+      logo: {
         "@type": "ImageObject",
-        "url": "https://nghiquyet68.vn/images/logo-anax.png"
-      }
+        url: "https://nghiquyet68.vn/images/logo-anax.png",
+      },
     },
-    "datePublished": selectedRow.date,
-    "dateModified": selectedRow.date,
-    "mainEntityOfPage": {
+    datePublished: selectedRow.date,
+    dateModified: selectedRow.date,
+    mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `https://nghiquyet68.vn/detail/${selectedRow.id}`
+      "@id": `https://nghiquyet68.vn/detail/${selectedRow.id}`,
     },
-    "keywords": [
+    keywords: [
       "Nghị quyết 68",
       selectedRow.category,
       selectedRow.tag,
       "kinh tế tư nhân",
       "Bộ Chính trị",
       "tin tức",
-      "thông tin mới nhất"
-    ]
+      "thông tin mới nhất",
+    ],
   };
 
   //render
   return (
-    <div className="container mx-auto px-4 py-8 bg-[#FCFAF6]">
-      {/* JSON-LD Structured Data */}
-      <Script
-        id="json-ld"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      
-      <Extensions />
-      <section className="text-center py-12">
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight font-sans text-red-700 mb-4 drop-shadow-sm">
-          {selectedRow.title}
-        </h1>
-        <div className="mx-auto w-24 h-1 bg-gradient-to-r from-red-400 via-yellow-400 to-red-400 rounded-full mb-4" />
-        <p className="text-lg md:text-xl text-black font-medium max-w-2xl mx-auto">
-          {selectedRow.description}
-        </p>
-      </section>
-      <div className="min-h-screen w-full flex flex-col bg-[#FCFAF6] ">
-        <div className="backdrop-blur-sm py-4">
-          <div className="max-w-7xl mx-auto px-4">
-            <nav className="hidden md:block text-md">
-              <ol className="flex items-center space-x-2 text-red-700">
-                <li>
-                  <Link
-                    href="/"
-                    onClick={() => setSelectedRow(null)}
-                    className="hover:text-red-900 transition-colors "
-                  >
-                    Trang chủ
-                  </Link>
-                </li>
-                <li className="text-red-400">/</li>
-                <li className="text-red-900 font-semibold">
-                  {selectedRow.title}
-                </li>
-              </ol>
-            </nav>
+    <>
+      <head>
+        <link rel="icon" type="image/png" href="/img/favicon-anax.png" />
+        <meta property="og:image" content="/img/logo-anax.png" />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="400" />
+        <meta property="og:image:height" content="400" />
+      </head>
+      <div className="container mx-auto px-4 py-8 bg-[#FCFAF6]">
+        {/* JSON-LD Structured Data */}
+        <Script
+          id="json-ld"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+
+        <Extensions />
+        <section className="text-center py-12">
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight font-sans text-red-700 mb-4 drop-shadow-sm">
+            {selectedRow.title}
+          </h1>
+          <div className="mx-auto w-24 h-1 bg-gradient-to-r from-red-400 via-yellow-400 to-red-400 rounded-full mb-4" />
+          <p className="text-lg md:text-xl text-black font-medium max-w-2xl mx-auto">
+            {selectedRow.description}
+          </p>
+        </section>
+        <div className="min-h-screen w-full flex flex-col bg-[#FCFAF6] ">
+          <div className="backdrop-blur-sm py-4">
+            <div className="max-w-7xl mx-auto px-4">
+              <nav className="hidden md:block text-md">
+                <ol className="flex items-center space-x-2 text-red-700">
+                  <li>
+                    <Link
+                      href="/"
+                      onClick={() => setSelectedRow(null)}
+                      className="hover:text-red-900 transition-colors "
+                    >
+                      Trang chủ
+                    </Link>
+                  </li>
+                  <li className="text-red-400">/</li>
+                  <li className="text-red-900 font-semibold">
+                    {selectedRow.title}
+                  </li>
+                </ol>
+              </nav>
+            </div>
           </div>
-        </div>
-        {/* Main Content */}
-        <main className="flex-grow relative overflow-x-hidden">
-          {/* Content Layout with Sidebar */}
-          <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
-            {/* Document Container */}
-            <div className="flex-1 pr-0 lg:pr-4">
-              {/* Document content */}
-              <div className="relative">
-                <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
+          {/* Main Content */}
+          <main className="flex-grow relative overflow-x-hidden">
+            {/* Content Layout with Sidebar */}
+            <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
+              {/* Document Container */}
+              <div className="flex-1 pr-0 lg:pr-4">
+                {/* Document content */}
+                <div className="relative">
+                  <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
+                </div>
+              </div>
+              <div className="lg:block">
+                <Sidebar />
               </div>
             </div>
-            <div className="lg:block">
-              <Sidebar />
-            </div>
-          </div>
-        </main>
+          </main>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
-export default DetailPage; 
+export default DetailPage;

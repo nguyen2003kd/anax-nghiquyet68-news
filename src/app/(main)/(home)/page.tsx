@@ -21,7 +21,7 @@ export default function HomePage() {
   const handleSelect = (item:RevolutionRow) => {
     // Ví dụ: item.code là "abc"
     setSelectedRow(item);
-    router.push(`/detail/${item.id}`); // URL động với ID của item
+  
   };
   const handleViewmore = () => {
     setViewmore(viewmore + 9)
@@ -54,12 +54,14 @@ export default function HomePage() {
     else{
       setLoading(false);
     }
-  
+    if(selectedRow!=null){
+      router.push(`/detail/${selectedRow.id}`); // URL động với ID của item
+    }
     // Reset selectedRow khi không ở trang chi tiết
     if (!pathname.includes("/detail")) {
       setSelectedRow(null);
     }
-  }, [pathname, viewmore]);
+  }, [pathname, viewmore,selectedRow]);
 
   //render
   return (
@@ -78,7 +80,7 @@ export default function HomePage() {
 
       {/* Loading spinner */}
       {loading ? (
-        <div className="inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center">
+        <div className="h-[400px] bg-white/80 backdrop-blur-sm flex items-center justify-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
         </div>
       ) : /* Main content area - conditional rendering based on selected row */

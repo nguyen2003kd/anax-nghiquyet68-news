@@ -3,6 +3,8 @@
 import { Header } from "../_lib/layout/header";
 import { Footer } from "../_lib/layout/footer";
 import { MobileSidebar } from "../_lib/layout/mobile-sidebar";
+import Patch from '@/app/config/path'
+// import Banneranax from '@/public/img/anax-aboutus.png'
 import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: {
@@ -11,9 +13,9 @@ export const metadata: Metadata = {
   },
   description: 'Website tổng hợp thông tin, tin tức mới nhất xung quanh Nghị quyết 68 về phát triển kinh tế tư nhân do Bộ Chính trị ban hành.',
   keywords: ['Nghị quyết 68', 'kinh tế tư nhân', 'Bộ Chính trị', 'tin tức', 'thông tin mới nhất'],
-  authors: [{ name: 'Nghị Quyết 68', url: 'https://nghiquyet68.vn' }],
-  creator: 'Nghị Quyết 68',
-  publisher: 'Nghị Quyết 68',
+  authors: [{ name: 'Anax', url: 'https://anax.vn' }],
+  creator: 'Anax',
+  publisher: 'Anax',
   formatDetection: {
     email: false,
     address: false,
@@ -35,10 +37,10 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://nghiquyet68.vn/images/og-banner.jpg',
+        url: `${Patch.link_url}/img/favicon-anax.png`,
         width: 1200,
         height: 630,
-        alt: 'Nghị Quyết 68 Banner',
+        alt: 'Anax',
       },
     ],
   },
@@ -46,7 +48,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Nghị Quyết 68 - Tổng hợp tin tức mới nhất',
     description: 'Website tổng hợp thông tin, tin tức mới nhất xung quanh Nghị quyết 68.',
-    images: ['https://nghiquyet68.vn/images/og-banner.jpg'],
+    images: [`${Patch.link_url}/img/favicon-anax.png`],
   },
   robots: {
     index: true,
@@ -72,6 +74,13 @@ export default function MainLayout({
   
   return (
     <div className="min-h-screen flex flex-col">
+      <head>
+        <link rel="icon" type="image/png" href="/img/favicon-anax.png" />
+        <meta property="og:image" content="/img/logo-anax.png" />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="400" />
+        <meta property="og:image:height" content="400" />
+      </head>
       <Header />
       <MobileSidebar />
       <main className="flex-1 pt-16 bg-[#FCFAF6]">

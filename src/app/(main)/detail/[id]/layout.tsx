@@ -77,7 +77,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       tags: [item.category, item.tag, 'Nghị quyết 68'],
       images: [
         {
-          url: 'https://nghiquyet68.vn/images/og-banner.jpg',
+          url: '/public/img/logo-anax.png',
           width: 1200,
           height: 630,
           alt: `${item.title} - Nghị Quyết 68`,
@@ -88,7 +88,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       card: 'summary_large_image',
       title: item.title,
       description: item.description || plainTextContent,
-      images: ['https://nghiquyet68.vn/images/og-banner.jpg'],
+      images: ['/public/img/logo-anax.png'],
     },
     robots: {
       index: true,
