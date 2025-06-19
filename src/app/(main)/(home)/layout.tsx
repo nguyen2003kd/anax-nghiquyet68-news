@@ -38,8 +38,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: `${Patch.link_url}/img/favicon-anax.png`,
-        width: 1200,
-        height: 630,
+        width: 512,
+        height: 512,
         alt: 'Anax',
       },
     ],
