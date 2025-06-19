@@ -1,17 +1,34 @@
 "use client";
 
-import { useState, useEffect, RefObject, useLayoutEffect, useRef } from "react";
+import { useState, useEffect, RefObject, useLayoutEffect, useRef, useCallback } from "react";
 
+/**
+ * Custom hook to keep a sidebar fixed on scroll, but prevent it from overlapping the footer.
+ * The sidebar will stick below the header and stop before touching the footer.
+ *
+ * @param sidebarRef - ref to the sidebar element
+ * @param footerRef - ref to the footer element
+ * @param headerSelector - (optional) CSS selector for the header, default is 'header'
+ * @returns sidebarStyle - style object to apply to the sidebar
+ */
 export function useSidebarScroll(
   sidebarRef: RefObject<HTMLDivElement | null>,
-  footerRef: RefObject<HTMLElement | null>
+  footerRef: RefObject<HTMLElement | null>,
+  headerSelector: string = "header"
 ) {
+  // Sidebar style state
   const [sidebarStyle, setSidebarStyle] = useState<React.CSSProperties>({});
+  // Initial top position of the sidebar (relative to the page)
   const [initialTop, setInitialTop] = useState<number | null>(null);
+  // Store the last position to avoid unnecessary style updates
   const lastPositionRef = useRef<number | null>(null);
+  // Store the animation frame id for cleanup
   const frameRef = useRef<number | null>(null);
 
-  // Save the initial position of the sidebar once only
+  // Margin to keep between the sidebar and the footer
+  const safetyMargin = 50;
+
+  // Save the initial position of the sidebar only once
   useLayoutEffect(() => {
     if (sidebarRef.current && initialTop === null) {
       const top = sidebarRef.current.getBoundingClientRect().top + window.scrollY;
@@ -19,94 +36,92 @@ export function useSidebarScroll(
     }
   }, [initialTop, sidebarRef]);
 
-  useEffect(() => {
+  // Main scroll/resize handler
+  const handleScroll = useCallback(() => {
+    // Helper to get the header height dynamically
+    const getHeaderHeight = () => {
+      const header = document.querySelector(headerSelector);
+      return header ? header.getBoundingClientRect().height : 0;
+    };
     if (!sidebarRef.current || !footerRef.current || initialTop === null) return;
 
-    let ticking = false;
+    // Cancel previous animation frame if exists
+    if (frameRef.current !== null) {
+      cancelAnimationFrame(frameRef.current);
+    }
 
-    const handleScroll = () => {
-      if (ticking) return;
-      ticking = true;
+    frameRef.current = requestAnimationFrame(() => {
+      const sidebar = sidebarRef.current;
+      const footer = footerRef.current;
+      const headerHeight = getHeaderHeight();
 
-      // Cancel previous animation frame if exists
-      if (frameRef.current !== null) {
-        cancelAnimationFrame(frameRef.current);
+      if (!sidebar || !footer) return;
+
+      const footerRect = footer.getBoundingClientRect();
+      const sidebarRect = sidebar.getBoundingClientRect();
+
+      // If the user has scrolled past the initial sidebar position (minus header height)
+      if (window.scrollY > initialTop - headerHeight) {
+        // Calculate the top of the footer relative to the viewport
+        const footerTopFromViewport = footerRect.top;
+        // Sidebar height
+        const sidebarHeight = sidebarRect.height;
+        // Check if the sidebar would overlap the footer
+        const willOverlap = headerHeight + sidebarHeight + safetyMargin > footerTopFromViewport;
+
+        let newStyle: React.CSSProperties;
+        let newPosition: number | null;
+
+        if (willOverlap) {
+          // Sidebar is close to the footer, stick it just above the footer
+          const newTopPosition = footerTopFromViewport - sidebarHeight - safetyMargin;
+          newStyle = {
+            position: "fixed",
+            top: `${newTopPosition}px`,
+            width: `${sidebar.offsetWidth}px`,
+            transition: "top 0.1s ease-out",
+          };
+          newPosition = newTopPosition;
+        } else {
+          // Sidebar is not close to the footer, stick it below the header
+          newStyle = {
+            position: "fixed",
+            top: `${headerHeight}px`,
+            width: `${sidebar.offsetWidth}px`,
+            transition: "top 0.2s ease-out",
+          };
+          newPosition = headerHeight;
+        }
+
+        // Only update style if the position has changed
+        if (lastPositionRef.current !== newPosition) {
+          setSidebarStyle(newStyle);
+          lastPositionRef.current = newPosition;
+        }
+      } else {
+        // If not scrolled past the initial position, keep sidebar static
+        if (lastPositionRef.current !== null) {
+          setSidebarStyle({
+            position: "static",
+            transition: "none",
+          });
+          lastPositionRef.current = null;
+        }
       }
 
-      frameRef.current = requestAnimationFrame(() => {
-        const sidebar = sidebarRef.current;
-        const footer = footerRef.current;
+      frameRef.current = null;
+    });
+  }, [initialTop, sidebarRef, footerRef, safetyMargin, headerSelector]);
 
-        // Early return if either ref is null
-        if (!sidebar || !footer) {
-          ticking = false;
-          return;
-        }
-
-        const footerRect = footer.getBoundingClientRect();
-        const sidebarRect = sidebar.getBoundingClientRect();
-        const headerHeight = 90;
-        const safetyMargin = 50;
-        
-        // If scrolled past the initial position of the sidebar
-        if (window.scrollY > initialTop - headerHeight) {
-          // Calculate footer position in viewport
-          const footerTopFromViewport = footerRect.top;
-          // Sidebar height
-          const sidebarHeight = sidebarRect.height;
-          
-          // Check if sidebar is close to touching the footer
-          const willOverlap = headerHeight + sidebarHeight + safetyMargin > footerTopFromViewport;
-          
-          if (willOverlap) {
-            // Calculate new position for sidebar to avoid touching footer
-            const newTopPosition = footerTopFromViewport - sidebarHeight - safetyMargin;
-            
-            // Only update style if position has changed significantly
-            if (lastPositionRef.current === null || Math.abs(lastPositionRef.current - newTopPosition) > 2) {
-              setSidebarStyle({
-                position: "fixed",
-                top: `${newTopPosition}px`,
-                width: `${sidebar.offsetWidth}px`,
-                transition: "top 0.1s ease-out",
-              });
-              lastPositionRef.current = newTopPosition;
-            }
-          } else {
-            // If not close to touching footer, keep normal fixed position
-            if (lastPositionRef.current !== headerHeight) {
-              setSidebarStyle({
-                position: "fixed",
-                top: `${headerHeight}px`,
-                width: `${sidebar.offsetWidth}px`,
-                transition: "top 0.2s ease-out",
-              });
-              lastPositionRef.current = headerHeight;
-            }
-          }
-        } else {
-          // If not scrolled past initial position, keep static
-          if (lastPositionRef.current !== null) {
-            setSidebarStyle({
-              position: "static",
-              transition: "none", // No transition needed when returning to static
-            });
-            lastPositionRef.current = null;
-          }
-        }
-
-        frameRef.current = null;
-        ticking = false;
-      });
-    };
-
-    // Use passive event listener to improve scroll performance
+  // Attach scroll and resize listeners
+  useEffect(() => {
     window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("resize", handleScroll, { passive: true });
 
-    // Call once initially
+    // Call once initially to set the correct position
     handleScroll();
 
+    // Cleanup listeners and animation frame on unmount
     return () => {
       if (frameRef.current !== null) {
         cancelAnimationFrame(frameRef.current);
@@ -114,7 +129,8 @@ export function useSidebarScroll(
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleScroll);
     };
-  }, [initialTop, sidebarRef, footerRef]);
+  }, [handleScroll]);
 
+  // Return the style object to apply to the sidebar
   return sidebarStyle;
 } 

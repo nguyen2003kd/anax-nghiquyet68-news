@@ -32,7 +32,7 @@ export const Header = () => {
         </div>
         <div className="flex items-center justify-center">
           <Link href="/" className="text-custom-orange py-3">
-            <Image  src={Logo} width={135} height={90} alt="anaX"></Image>
+            <Image  src={Logo} width={130} height={90} alt="anaX" className="w-[135px] h-[90px] object-contain"></Image>
           </Link>
         </div>
         <div className="lg:hidden flex items justify-end">

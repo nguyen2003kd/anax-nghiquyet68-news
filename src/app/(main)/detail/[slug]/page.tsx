@@ -146,7 +146,7 @@ function DetailContent() {
 
           <main className="flex-grow relative overflow-x-hidden">
             <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
-              <div className="flex-1 pr-0 lg:pr-4">
+              <div className="flex-1 pr-0 lg:p-4">
                 <div className="relative">
                   <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
                 </div>
@@ -163,20 +163,10 @@ function DetailContent() {
 }
 
 //function
-function DetailPage() {
+export default function DetailPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="container mx-auto px-4 py-8 bg-[#FCFAF6]">
-          <div className="flex items-center justify-center min-h-screen">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
-          </div>
-        </div>
-      }
-    >
+    <Suspense fallback={<div className="container mx-auto px-4 py-8 bg-[#FCFAF6]"><div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div></div></div>}>
       <DetailContent />
     </Suspense>
   );
 }
-
-export default DetailPage;

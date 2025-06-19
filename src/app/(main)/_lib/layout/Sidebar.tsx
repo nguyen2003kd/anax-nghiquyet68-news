@@ -8,17 +8,18 @@ import { useRef, useEffect } from "react";
 import { useSidebarScroll } from "@/hooks/use-sidebar-scroll";
 import { useRouter } from "next/navigation";
 import { RevolutionRow } from "@/lib/type";
+import slugify from "slugify";
 
 export default function Sidebar() {
-  const { rows, selectedRow, setSelectedRow } = usePageHome();
+  const { rows, selectedRow } = usePageHome();
   const router = useRouter();
   const sidebarRef = useRef<HTMLDivElement>(null);
   const footerRef = useRef<HTMLElement>(null);
   const sidebarStyle = useSidebarScroll(sidebarRef, footerRef);
   
   const handleNewsClick = (news: RevolutionRow) => {
-    setSelectedRow(news);
-    router.push(`/detail/${news.id}`);
+    const slug = slugify(news.title, { lower: true, strict: true });
+    router.push(`/detail/${slug}?id=${news.id}`);
   };
   
   const getCategoryColor = (category: string) => {
@@ -41,7 +42,7 @@ export default function Sidebar() {
   }, []);
 
   return (
-    <aside className="w-full lg:w-72 lg:ml-4">
+    <aside className="w-full lg:w-60 lg:ml-4">
       <div className="w-full lg:hidden">
         <Card className="bg-white/95 border-1 rounded-xl border-[#B90D2B] shadow-lg hover:shadow-xl transition-all duration-300">
           <div className="border-b bg-[#B90D2B] rounded-bl-none rounded-br-none rounded-tl-xl rounded-tr-xl p-5 border-gray-100 items-center justify-center flex">
@@ -49,12 +50,12 @@ export default function Sidebar() {
               Tin tức liên quan
             </h1>
           </div>
-          <CardContent className="space-y-4 py-4">
-            {rows.filter((news) => news.id !== selectedRow?.id).slice(0, 5).map((news, index) => (
+          <CardContent className="gap-2 py-4 md:grid grid-cols-2">
+            {rows.filter((news) => news.id !== selectedRow?.id).slice(0, 6).map((news, index) => (
               <div
                 key={index}
                 onClick={() => handleNewsClick(news)}
-                className="group border-b border-gray-400 pb-4 last:border-b-0 last:pb-0 hover:bg-gray-50/80 p-3 transition-all duration-300 cursor-pointer"
+                className="group md:rounded-2xl md:border-1 border-b border-gray-400 pb-4  hover:bg-gray-50/80 p-3 transition-all duration-300 cursor-pointer"
               >
                 <h4 className="text-sm font-bold text-[#B90D2B] line-clamp-2 mb-3 group-hover:text-orange-600 transition-colors duration-200">
                   {news.title}
@@ -86,7 +87,7 @@ export default function Sidebar() {
           </div>
           <CardContent className="space-y-4 py-4">
             {rows.filter((news) => news.id !== selectedRow?.id).slice(0, 5).map((news, index) => (
-              <div
+                <div
                 key={index}
                 onClick={() => handleNewsClick(news)}
                 className="group border-b border-gray-400 pb-4 last:border-b-0 last:pb-0 hover:bg-gray-50/80 p-3 transition-all duration-300 cursor-pointer"

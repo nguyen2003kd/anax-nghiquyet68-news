@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import ResolutionCard from "@/app/(main)/_components/ResolutionCard";
 import { RevolutionRow } from "./_lib/type";
 import { usePageHome } from "@/hooks/use-pagehome";
@@ -31,7 +31,7 @@ export default function HomePage() {
   };
 
   // Fetch data from Google Sheets API
-  const getData = async () => {
+  const getData = useCallback(async () => {
     setLoading(true);
     const SHEET_URL = `https://script.google.com/macros/s/AKfycby9iEIsY0gRLG0R57RCO2QPmhJu4A-aHz9pKJcT5bPg-xv7KH61j4sVaLA6W96F6WLG7g/exec?limit=${viewmore}&offset=0`;
 
@@ -50,9 +50,9 @@ export default function HomePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [viewmore, setRows]);
 
-  // 👉 Load data if needed
+  // Load data if needed
   useEffect(() => {
     if (rows.length === 0 || viewmore > prevViewmore.current) {
       getData();
@@ -60,7 +60,7 @@ export default function HomePage() {
     } else {
       setLoading(false);
     }
-  }, [viewmore, rows.length]);
+  }, [viewmore, rows.length, getData]);
 
 
 
@@ -80,11 +80,11 @@ export default function HomePage() {
 
       {/* Loading Spinner */}
       {loading ? (
-        <div className="h-[400px] bg-white/80 backdrop-blur-sm flex items-center justify-center">
+        <div className="h-[400px] bg-[#FCFAF6] backdrop-blur-sm flex items-center justify-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
         </div>
       ) : rows.length>0? (
-        // 👉 List View
+        //List View
         <section className="py-8">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -109,7 +109,7 @@ export default function HomePage() {
           </div>
         </section>
       ) : (
-        // 👉 Loading while redirecting to detail
+        // Loading while redirecting to detail
         <div className="flex items-center justify-center min-h-screen">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
         </div>
