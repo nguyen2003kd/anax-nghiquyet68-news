@@ -94,8 +94,10 @@ export async function generateStaticParams() {
 
 export default function DetailLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: { slug: string };
 }) {
   return (
     <div className="min-h-screen flex flex-col">
