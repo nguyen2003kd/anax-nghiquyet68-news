@@ -50,8 +50,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       'thông tin mới nhất',
     ],
     authors: [{ name: 'Anax', url: 'https://anax.vn/' }],
-    creator: 'Nghị Quyết 68',
-    publisher: 'Nghị Quyết 68',
+    creator: 'Anax',
+    publisher: 'Anax',
     formatDetection: {
       email: false,
       address: false,
@@ -68,12 +68,12 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       title: item.title,
       description: item.description || plainTextContent,
       url: `https://nghiquyet68.vn/detail/${id}`,
-      siteName: 'Nghị Quyết 68',
+      siteName: 'Anax',
       locale: 'vi_VN',
       type: 'article',
       publishedTime: item.date,
       modifiedTime: item.date,
-      authors: ['Nghị Quyết 68'],
+      authors: ['Anax'],
       tags: [item.category, item.tag, 'Nghị quyết 68'],
       images: [
         {
