@@ -6,47 +6,55 @@ import DOMPurify from "dompurify";
 import Link from "next/link";
 import { usePageHome } from "@/hooks/use-pagehome";
 import Extensions from "@/app/(main)/_components/Extensions";
-import { useParams } from "next/navigation";
+import { usePathname, useSearchParams} from "next/navigation";
 import { useEffect } from "react";
 import Script from "next/script";
 import { RevolutionRow } from "@/app/(main)/_components/lib/types";
 //function
 function DetailPage() {
   //state
-  const { selectedRow, setRows, setSelectedRow, rows } = usePageHome();
-  const params = useParams();
-  const id = params.id as string;
+  const { selectedRow,setRows, setSelectedRow, rows } = usePageHome();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+  const fetchRows = async () => {
+    const SHEET_URL =
+      "https://script.google.com/macros/s/AKfycby9iEIsY0gRLG0R57RCO2QPmhJu4A-aHz9pKJcT5bPg-xv7KH61j4sVaLA6W96F6WLG7g/exec";
+    try {
+      const res = await fetch(SHEET_URL, { cache: "no-store" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json: RevolutionRow[] = await res.json();
+      setRows(
+        json.sort(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        )
+      );
+    } catch (err) {
+      console.error("Failed to fetch sheet", err);
+    }
+  };
 
-  // Tìm item dựa trên ID từ URL
+  // Tìm item dựa trên ID từ URLa
   useEffect(() => {
+    console.log(rows)
     if (id && rows.length > 0) {
       const item = rows.find((row) => row.id === id);
       if (item) {
+        console.log("gán vào rôi")
         setSelectedRow(item);
       }
     }
     if (rows.length === 0) {
-      console.log("fetchRows: fetch ở detail");
-      const fetchRows = async () => {
-        const SHEET_URL =
-          "https://script.google.com/macros/s/AKfycby9iEIsY0gRLG0R57RCO2QPmhJu4A-aHz9pKJcT5bPg-xv7KH61j4sVaLA6W96F6WLG7g/exec";
-        try {
-          const res = await fetch(SHEET_URL, { cache: "no-store" });
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          const json: RevolutionRow[] = await res.json();
-          setRows(
-            json.sort(
-              (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-            )
-          );
-        } catch (err) {
-          console.error("Failed to fetch sheet", err);
-        }
-      };
+      console.log("fetch here")
       fetchRows();
     }
-  }, [id, rows, setSelectedRow, setRows]);
-
+  }, [id, rows]);
+  // 👉 Reset selected row when leaving /detail
+  useEffect(() => {
+    if (!pathname.includes("/detail")) {
+      setSelectedRow(null);
+    }
+  }, [pathname]);
   const sanitizedHtml =
     typeof window !== "undefined"
       ? (DOMPurify.sanitize(selectedRow?.content || "") as string)
@@ -103,13 +111,7 @@ function DetailPage() {
   //render
   return (
     <>
-      <head>
-        <link rel="icon" type="image/png" href="/img/favicon-anax.png" />
-        <meta property="og:image" content="/img/logo-anax.png" />
-        <meta property="og:image:type" content="image/png" />
-        <meta property="og:image:width" content="400" />
-        <meta property="og:image:height" content="400" />
-      </head>
+
       <div className="container mx-auto px-4 py-8 bg-[#FCFAF6]">
         {/* JSON-LD Structured Data */}
         <Script
@@ -128,6 +130,7 @@ function DetailPage() {
             {selectedRow.description}
           </p>
         </section>
+
         <div className="min-h-screen w-full flex flex-col bg-[#FCFAF6] ">
           <div className="backdrop-blur-sm py-4">
             <div className="max-w-7xl mx-auto px-4">
@@ -136,7 +139,6 @@ function DetailPage() {
                   <li>
                     <Link
                       href="/"
-                      onClick={() => setSelectedRow(null)}
                       className="hover:text-red-900 transition-colors "
                     >
                       Trang chủ
@@ -150,13 +152,10 @@ function DetailPage() {
               </nav>
             </div>
           </div>
-          {/* Main Content */}
+
           <main className="flex-grow relative overflow-x-hidden">
-            {/* Content Layout with Sidebar */}
             <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
-              {/* Document Container */}
               <div className="flex-1 pr-0 lg:pr-4">
-                {/* Document content */}
                 <div className="relative">
                   <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
                 </div>

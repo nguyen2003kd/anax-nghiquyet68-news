@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next'
 import { RevolutionRow } from '@/lib/type'
+import slugify from "slugify"
 
 async function getData() {
   const SHEET_URL =
@@ -28,12 +29,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   };
 
   // Các trang detail cho từng item
-  const detailPages = rows.map((item: RevolutionRow) => ({
-    url: `https://nghiquyet68.vn/detail/${item.id}`,
-    lastModified: new Date(item.date),
-    changeFrequency: 'weekly' as const,
-    priority: 0.8,
-  }));
+  const detailPages = rows.map((item: RevolutionRow) => {
+    const slug = slugify(item.title, { lower: true, strict: true });
+    return {
+      url: `https://nghiquyet68.vn/detail/${slug}?id=${item.id}`,
+      lastModified: new Date(item.date),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    };
+  });
 
   return [homePage, ...detailPages];
 } 

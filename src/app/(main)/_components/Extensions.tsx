@@ -4,12 +4,12 @@ import { ArrowUp, ArrowLeft } from "lucide-react";
 import Phoneimg from "@/public/img/phone.png";
 import Zaloimg from "@/public/img/zalo.png";
 import Image from "next/image";
-import { usePageHome } from "@/hooks/use-pagehome";
 import { useEffect,useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter,useParams } from "next/navigation";
 export default function Extensions() {
     const router = useRouter();
-    const {  selectedRow , setSelectedRow } = usePageHome();
+    const params = useParams();
+    const id = params.id as string;
     const [showBackToTop, setShowBackToTop] = useState(false);
     const handleBackToTop = () => {
         window.scrollTo({
@@ -18,7 +18,6 @@ export default function Extensions() {
         });
       };
       const handleBack = () => {
-        setSelectedRow(null);
         router.push("/");
     }
       useEffect(() => {
@@ -55,7 +54,7 @@ export default function Extensions() {
     </div>
     <div className="flex flex-col items-center justify-between gap-4">
       {/* Back button - only shown when in detail view */}
-      {selectedRow && (
+      {id && (
         <button
         onClick={handleBack}
           className="text-white bg-gradient-to-r from-red-600 to-yellow-600 w-10 h-10 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition"

@@ -3,81 +3,61 @@ import { Footer } from "../../_lib/layout/footer";
 import { MobileSidebar } from "../../_lib/layout/mobile-sidebar";
 import type { Metadata } from "next";
 import { RevolutionRow } from "@/lib/type";
-
+import Head from "next/head";
+import slugify from "slugify";
+import Patch from "@/app/config/path";
 // Function để lấy dữ liệu từ Google Sheets
-async function getData() {
+async function getData(): Promise<RevolutionRow[]> {
   const SHEET_URL =
     "https://script.google.com/macros/s/AKfycby9iEIsY0gRLG0R57RCO2QPmhJu4A-aHz9pKJcT5bPg-xv7KH61j4sVaLA6W96F6WLG7g/exec";
-
   try {
     const res = await fetch(SHEET_URL, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const json = await res.json();
-    return json;
+    return await res.json();
   } catch (err) {
     console.error("Failed to fetch sheet", err);
     return [];
   }
 }
 
-// Generate metadata động cho từng item
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
-  // Đợi params hoàn thành trước khi sử dụng
-  const { id } = await params;
-
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  const { slug } = params;
   const rows = await getData();
-  const item = rows.find((row: RevolutionRow) => row.id === id);
+
+  const item = rows.find(
+    (row) => slugify(row.title, { lower: true, strict: true }) === slug
+  );
 
   if (!item) {
     return {
-      title: 'Không tìm thấy - Nghị Quyết 68',
-      description: 'Trang không tồn tại',
+      title: "Không tìm thấy - Nghị Quyết 68",
+      description: "Trang không tồn tại",
     };
   }
 
-  const plainTextContent = item.content.replace(/<[^>]*>/g, '').substring(0, 160);
+  const plainTextContent = item.content.replace(/<[^>]*>/g, "").substring(0, 160);
 
   return {
     title: `${item.title} - Nghị Quyết 68`,
     description: item.description || plainTextContent,
-    keywords: [
-      'Nghị quyết 68',
-      item.category,
-      item.tag,
-      'kinh tế tư nhân',
-      'Bộ Chính trị',
-      'tin tức',
-      'thông tin mới nhất',
-    ],
-    authors: [{ name: 'Anax', url: 'https://anax.vn/' }],
-    creator: 'Anax',
-    publisher: 'Anax',
-    formatDetection: {
-      email: false,
-      address: false,
-      telephone: false,
-    },
-    metadataBase: new URL('https://nghiquyet68.vn'),
-    alternates: {
-      canonical: `/detail/${id}`,
-      languages: {
-        'vi-VN': `/detail/${id}`,
-      },
-    },
     openGraph: {
       title: item.title,
       description: item.description || plainTextContent,
-      url: `https://nghiquyet68.vn/detail/${id}`,
-      siteName: 'Anax',
-      locale: 'vi_VN',
-      type: 'article',
+      url: `https://nghiquyet68.vn/detail/${slug}?id=${item.id}`,
+      siteName: "Anax",
+      locale: "vi_VN",
+      type: "article",
       publishedTime: item.date,
       modifiedTime: item.date,
-      authors: ['Anax'],
-      tags: [item.category, item.tag, 'Nghị quyết 68'],
+      authors: ["Anax"],
+      tags: [item.category, item.tag],
       images: [
         {
-          url: '/public/img/logo-anax.png',
+          url: `${Patch.link_url}/img/anax-paner.png`,
           width: 1200,
           height: 630,
           alt: `${item.title} - Nghị Quyết 68`,
@@ -85,25 +65,21 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       ],
     },
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
       title: item.title,
       description: item.description || plainTextContent,
-      images: ['/public/img/logo-anax.png'],
+      images: [ `${Patch.link_url}/img/anax-paner.png`],
+    },
+    metadataBase: new URL("https://nghiquyet68.vn"),
+    alternates: {
+      canonical: `/detail/${slug}?id=${item.id}`,
+      languages: {
+        "vi-VN": `/detail/${slug}?id=${item.id}`,
+      },
     },
     robots: {
       index: true,
       follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
-      },
-    },
-    verification: {
-      google: 'google-site-verification=your-verification-code',
-      yandex: 'yandex-verification=your-verification-code',
     },
   };
 }
@@ -123,6 +99,14 @@ export default function DetailLayout({
   children: React.ReactNode;
 }) {
   return (
+    <>
+      <Head>
+        <link rel="icon" type="image/png" href="/img/favicon-anax.png" />
+        <meta property="og:image" content="/img/logo-anax.png" />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="400" />
+        <meta property="og:image:height" content="400" />
+      </Head>
     <div className="min-h-screen flex flex-col">
       <Header />
       <MobileSidebar />
@@ -131,5 +115,6 @@ export default function DetailLayout({
       </main>
       <Footer />
     </div>
+    </>
   );
 } 
