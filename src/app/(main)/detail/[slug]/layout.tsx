@@ -86,9 +86,8 @@ export async function generateMetadata({
 // Generate static params cho tất cả items
 export async function generateStaticParams() {
   const rows = await getData();
-  
   return rows.map((item: RevolutionRow) => ({
-    id: item.id,
+    slug: slugify(item.title, { lower: true, strict: true }),
   }));
 }
 
