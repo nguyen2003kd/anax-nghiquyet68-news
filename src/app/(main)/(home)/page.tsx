@@ -60,7 +60,7 @@ export default function HomePage() {
     } else {
       setLoading(false);
     }
-  }, [viewmore, getData, rows.length]);
+  }, [viewmore, rows.length]);
 
 
 
