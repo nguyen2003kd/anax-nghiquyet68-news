@@ -107,4 +107,4 @@ export default function DetailLayout({
       <Footer />
     </div>
   );
-} 
+}
