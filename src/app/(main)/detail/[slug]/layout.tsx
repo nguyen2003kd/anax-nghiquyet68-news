@@ -3,7 +3,6 @@ import { Footer } from "../../_lib/layout/footer";
 import { MobileSidebar } from "../../_lib/layout/mobile-sidebar";
 import type { Metadata } from "next";
 import { RevolutionRow } from "@/lib/type";
-import slugify from "slugify";
 import Patch from "@/app/config/path";
 // Function để lấy dữ liệu từ Google Sheets
 async function getData(): Promise<RevolutionRow[]> {
@@ -24,12 +23,13 @@ export async function generateMetadata({
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
-  const { slug } = params;
-  const rows = await getData();
+  const rawSlug = params.slug;
 
-  const item = rows.find(
-    (row) => slugify(row.title, { lower: true, strict: true }) === slug
-  );
+  // Tách slug và id từ rawSlug (vd: "chinh-sach-ho-tro&id=123")
+  const [pureSlug, id] = rawSlug.split("&id=");
+
+  const rows = await getData();
+  const item = rows.find((row) => String(row.id) === id);
 
   if (!item) {
     return {
@@ -46,7 +46,7 @@ export async function generateMetadata({
     openGraph: {
       title: item.title,
       description: item.description || plainTextContent,
-      url: `https://nghiquyet68.vn/detail/${slug}?id=${item.id}`,
+      url: `https://nghiquyet68.vn/detail/${pureSlug}&id=${item.id}`,
       siteName: "Anax",
       locale: "vi_VN",
       type: "article",
@@ -67,13 +67,13 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: item.title,
       description: item.description || plainTextContent,
-      images: [ `${Patch.link_url}/img/anax-paner.png`],
+      images: [`${Patch.link_url}/img/anax-paner.png`],
     },
     metadataBase: new URL("https://nghiquyet68.vn"),
     alternates: {
-      canonical: `/detail/${slug}?id=${item.id}`,
+      canonical: `/detail/${pureSlug}&id=${item.id}`,
       languages: {
-        "vi-VN": `/detail/${slug}?id=${item.id}`,
+        "vi-VN": `/detail/${pureSlug}&id=${item.id}`,
       },
     },
     robots: {
@@ -83,13 +83,7 @@ export async function generateMetadata({
   };
 }
 
-// Generate static params cho tất cả items
-export async function generateStaticParams() {
-  const rows = await getData();
-  return rows.map((item: RevolutionRow) => ({
-    slug: slugify(item.title, { lower: true, strict: true }),
-  }));
-}
+
 
 export default function DetailLayout({
   children,
