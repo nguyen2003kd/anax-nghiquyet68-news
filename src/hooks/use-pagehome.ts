@@ -11,7 +11,7 @@ export interface PageHome {
   }
   export const usePageHome = create<PageHome>((set)=>({
         rows: [],
-        viewmore: 4,
+        viewmore: 9,
         selectedRow: null,
         setViewmore: (viewmore) => set({ viewmore }),
         setRows: (rows) => set({ rows }),
